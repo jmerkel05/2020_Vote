@@ -76,5 +76,6 @@ Select the image below to view an [interactive html](https://trusting-hugle-9a5e
 | 2020-10-20 |      3.73728e+07 |
 | 2020-10-21 |      4.31613e+07 |
 | 2020-10-22 |      4.86746e+07 |
-| 2020-10-23 |      5.35058e+07 |
+| 2020-10-23 |      5.3858e+07  |
+| 2020-10-24 |      5.74155e+07 |
 <!--end table_2020-->

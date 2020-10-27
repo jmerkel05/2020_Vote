@@ -79,5 +79,5 @@ Select the image below to view an [interactive html](https://trusting-hugle-9a5e
 | 2020-10-23 | 53,858,011   |
 | 2020-10-24 | 57,415,468   |
 | 2020-10-25 | 59,477,414   |
-| 2020-10-26 | 60,507,338   |
+| 2020-10-26 | 64,304,061   |
 <!--end table_2020-->

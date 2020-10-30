@@ -295,6 +295,7 @@ def update_md(filename, replace_list):
         file.write(filetext)
 
 df_totals = get_data(cloned_repo, totals_pkl_file, totals_pkl_file)
+df_totals.sort_values('datetime',ascending=False, inplace=True)
 df_2016_totals = get_2016_data(vote_2016_dict)
 mfig = vote2020plt(df_totals['datetime'], df_totals['vote_total'], df_2016_totals['datetime'], df_2016_totals['vote_total_2016'])
 p = vote2020_bokeh(df_totals, df_2016_totals)

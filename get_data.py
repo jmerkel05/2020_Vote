@@ -134,9 +134,9 @@ def get_data(repo, pkl_file, pkl_save=None):
         df.to_pickle(pkl_save)
     return df
 
-def get_2016_data(vote_dict):
+def get_2016_data(vote_dict, offset=0):
     df = pd.DataFrame.from_dict(vote_dict)
-    df['datetime'] = df['datetime'].apply(lambda x: timezone.localize(datetime.strptime(x, '%m/%d/%Y %I:%M %p'))) + pd.DateOffset(years=4)
+    df['datetime'] = df['datetime'].apply(lambda x: timezone.localize(datetime.strptime(x, '%m/%d/%Y %I:%M %p'))) + pd.DateOffset(years=offset)
     return df
 
 def vote2020plt(dates, values, dates_2016, values_2016):
@@ -306,7 +306,7 @@ def md_tables(df):
         
 df_totals = get_data(cloned_repo, totals_pkl_file, totals_pkl_file)
 df_totals.sort_values('datetime',ascending=False, inplace=True)
-df_2016_totals = get_2016_data(vote_2016_dict)
+df_2016_totals = get_2016_data(vote_2016_dict, offset=4)
 mfig = vote2020plt(df_totals['datetime'], df_totals['vote_total'], df_2016_totals['datetime'], df_2016_totals['vote_total_2016'])
 p = vote2020_bokeh(df_totals, df_2016_totals)
 output_file(netlify_html)
@@ -315,7 +315,7 @@ save(p, filename=netlify_html, title=netlify_html)
 # rpl_text = {'table_2016':df_2016_totals.groupby(by=[df_2016_totals.datetime.dt.date]).vote_total_2016.max().apply('{:,.0f}'.format).to_markdown(),
 #             'table_2020':df_totals.groupby(by=[df_totals.datetime.dt.date]).vote_total.max().apply('{:,.0f}'.format).to_markdown()}
 
-rpl_text = {'table_2016':md_tables(df_2016_totals),
+rpl_text = {'table_2016':md_tables(get_2016_data(vote_2016_dict)),
              'table_2020':md_tables(df_totals)}
 update_md(rdme_fname, rpl_text)
 

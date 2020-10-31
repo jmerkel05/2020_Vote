@@ -294,6 +294,16 @@ def update_md(filename, replace_list):
     with open(filename,'w') as file:
         file.write(filetext)
 
+def md_tables(df):
+    total_col = df.columns[pd.Series(df.columns).str.startswith('vote_total')][0]
+    df_totals_day = df.groupby(by=[df.datetime.dt.date])[total_col].max().to_frame()
+    df_totals_day['Difference'] = df_totals_day.diff(periods=1)
+    df_totals_day.rename(columns={total_col:'Vote Total'}, inplace=True)
+    df_totals_day.rename_axis('Date', inplace=True)
+    df_totals_day[['Vote Total','Difference']] = df_totals_day[['Vote Total','Difference']].applymap('{:,.0f}'.format)
+#     df_totals_day.style.format('{:,.0f}')
+    return df_totals_day.to_markdown()
+        
 df_totals = get_data(cloned_repo, totals_pkl_file, totals_pkl_file)
 df_totals.sort_values('datetime',ascending=False, inplace=True)
 df_2016_totals = get_2016_data(vote_2016_dict)
@@ -301,8 +311,12 @@ mfig = vote2020plt(df_totals['datetime'], df_totals['vote_total'], df_2016_total
 p = vote2020_bokeh(df_totals, df_2016_totals)
 output_file(netlify_html)
 save(p, filename=netlify_html, title=netlify_html)
-rpl_text = {'table_2016':df_2016_totals.groupby(by=[df_2016_totals.datetime.dt.date]).vote_total_2016.max().apply('{:,.0f}'.format).to_markdown(),
-            'table_2020':df_totals.groupby(by=[df_totals.datetime.dt.date]).vote_total.max().apply('{:,.0f}'.format).to_markdown()}
+
+# rpl_text = {'table_2016':df_2016_totals.groupby(by=[df_2016_totals.datetime.dt.date]).vote_total_2016.max().apply('{:,.0f}'.format).to_markdown(),
+#             'table_2020':df_totals.groupby(by=[df_totals.datetime.dt.date]).vote_total.max().apply('{:,.0f}'.format).to_markdown()}
+
+rpl_text = {'table_2016':md_tables(df_2016_totals),
+             'table_2020':md_tables(df_totals)}
 update_md(rdme_fname, rpl_text)
 
 def update_notebook():
